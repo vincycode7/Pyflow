@@ -66,6 +66,25 @@ class Add(Node):
             self.value += each_node.value if each_node is not None else 0
     def __str__(self) -> str:
         return str(self.value)
+
+class Mul(Node):
+    def __init__(self, *args):
+        # You could access `x` and `y` in forward with
+        # self.inbound_nodes[0] (`x`) and self.inbound_nodes[1] (`y`)
+        Node.__init__(self, [*args])
+
+    def forward(self):
+        """
+        Set the value of this node (`self.value`) to the sum of its inbound_nodes.
+        Remember to grab the value of each inbound_node to sum!
+
+        Your code here!
+        """
+        self.value = None if self.value is not None else 1
+        for each_node in self.inbound_nodes:
+            self.value *= each_node.value if each_node is not None else 1
+    def __str__(self) -> str:
+        return str(self.value)
     
 
 
