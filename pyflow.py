@@ -26,10 +26,11 @@ class Node(object):
 
 
 class Input(Node):
-    def __init__(self):
+    def __init__(self,value):
         # an Input node has no inbound nodes,
         # so no need to pass anything to the Node instantiator
         Node.__init__(self)
+        self.forward(value=value)
 
     # NOTE: Input node is the only node that may
     # receive its value as an argument to forward().
@@ -44,6 +45,8 @@ class Input(Node):
         if value is not None:
             self.value = value
 
+    def __str__(self) -> str:
+        return str(self.value)
 
 class Add(Node):
     def __init__(self, x, y):
@@ -61,6 +64,9 @@ class Add(Node):
         self.value = None if self.value is not None else 0
         for each_node in self.inbound_nodes:
             self.value += each_node.value if each_node is not None else 0
+    def __str__(self) -> str:
+        return str(self.value)
+    
 
 
 """
@@ -77,7 +83,8 @@ def topological_sort(feed_dict):
     Returns a list of sorted nodes.
     """
 
-    input_nodes = [n for n in feed_dict.keys()]
+    # input_nodes = [n for n in feed_dict.keys()]
+    input_nodes = [n for n in feed_dict]
 
     G = {}
     nodes = [n for n in input_nodes]
@@ -97,8 +104,12 @@ def topological_sort(feed_dict):
     while len(S) > 0:
         n = S.pop()
 
+        # if isinstance(n, Input):
+        #     n.value = feed_dict[n]
+
         if isinstance(n, Input):
-            n.value = feed_dict[n]
+            print(n.value)
+            # n.value = feed_dict[n]
 
         L.append(n)
         for m in n.outbound_nodes:
