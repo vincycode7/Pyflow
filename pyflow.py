@@ -49,10 +49,10 @@ class Input(Node):
         return str(self.value)
 
 class Add(Node):
-    def __init__(self, x, y):
+    def __init__(self, *args):
         # You could access `x` and `y` in forward with
         # self.inbound_nodes[0] (`x`) and self.inbound_nodes[1] (`y`)
-        Node.__init__(self, [x, y])
+        Node.__init__(self, [*args])
 
     def forward(self):
         """
@@ -74,7 +74,7 @@ No need to change anything below here!
 """
 
 
-def topological_sort(feed_dict):
+def topological_sort(input_nodes):
     """
     Sort generic nodes in topological order using Kahn's Algorithm.
 
@@ -84,7 +84,7 @@ def topological_sort(feed_dict):
     """
 
     # input_nodes = [n for n in feed_dict.keys()]
-    input_nodes = [n for n in feed_dict]
+    # input_nodes = [n for n in feed_dict]
 
     G = {}
     nodes = [n for n in input_nodes]
@@ -107,8 +107,7 @@ def topological_sort(feed_dict):
         # if isinstance(n, Input):
         #     n.value = feed_dict[n]
 
-        if isinstance(n, Input):
-            print(n.value)
+        # if isinstance(n, Input):
             # n.value = feed_dict[n]
 
         L.append(n)
