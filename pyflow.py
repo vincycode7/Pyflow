@@ -1,6 +1,4 @@
-"""
-You need to change the Add() class below.
-"""
+import numpy as np
 
 class Node(object):
     def __init__(self, inbound_nodes=[]):
@@ -42,8 +40,7 @@ class Input(Node):
     # Example:
     # val0 = self.inbound_nodes[0].value
     def forward(self, value=None):
-        if value is not None:
-            self.value = value
+        if value is not None: self.value = value
 
     def __str__(self) -> str:
         return str(self.value)
@@ -61,7 +58,7 @@ class Add(Node):
 
         Your code here!
         """
-        self.value = None if self.value is not None else 0
+        self.value = self.value if self.value is not None else 0
         for each_node in self.inbound_nodes:
             self.value += each_node.value if each_node is not None else 0
     def __str__(self) -> str:
@@ -80,7 +77,7 @@ class Mul(Node):
 
         Your code here!
         """
-        self.value = None if self.value is not None else 1
+        self.value = self.value if self.value is not None else 1
         for each_node in self.inbound_nodes:
             self.value *= each_node.value if each_node is not None else 1
     def __str__(self) -> str:
@@ -102,9 +99,13 @@ class Linear(Node):
 
         Your code goes here!
         """
-        self.value += self.inbound_nodes[2].value[0] # input bias in value
-        for inp, wgh in zip(self.inbound_nodes[0].value, self.inbound_nodes[1].value):
-            self.value += inp*wgh
+        # self.value += self.inbound_nodes[2].value[0] # input bias in value
+        # for inp, wgh in zip(self.inbound_nodes[0].value, self.inbound_nodes[1].value):
+        #     self.value += inp*wgh
+
+        self.value = self.value if self.value is not None else 0
+        self.value += np.dot(self.inbound_nodes[0].value, self.inbound_nodes[1].value) + self.inbound_nodes[2].value
+
 
     def __str__(self) -> str:
         return str(self.value)

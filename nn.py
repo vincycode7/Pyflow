@@ -10,6 +10,7 @@ build a network that solves the equation below?
 """
 
 from pyflow import *
+import numpy as np
 
 # x, y, z = Input(value=10), Input(value=5), Input(value=50)
 # f = Add(Mul(x, y, z),y)
@@ -44,7 +45,7 @@ graph1 = topological_sort([inp1, inp2])
 output1 = forward_pass(func1, graph1)
 
 # result
-# print(output1, graph1)
+print(output1, graph1, "\n")
 
 
 # task2
@@ -61,4 +62,20 @@ graph = topological_sort([inputs, weights, bias])
 # the output
 output = forward_pass(f, graph)
 
-print(output, graph) # should be 12.7 with this example
+print(output, graph, "\n") # should be 12.7 with this example
+
+
+# tasks 3
+
+# the input 
+X, W, b = Input(value=np.array([[-1., -2.], [-1, -2]])), Input(value=np.array([[2., -3], [2., -3]])), Input(value=np.array([-3., -5]))
+
+# the linear function
+f2 = Linear(X, W, b)
+
+# the graph
+graph2 = topological_sort([X, W, b])
+
+# the output
+output2 = forward_pass(f2, graph2)
+print(output2, graph2, "\n")
