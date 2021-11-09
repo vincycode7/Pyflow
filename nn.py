@@ -9,8 +9,7 @@ build a network that solves the equation below?
 (x + y) + y
 """
 
-from pyflow import *
-import numpy as np
+from tasks import *
 
 # x, y, z = Input(value=10), Input(value=5), Input(value=50)
 # f = Add(Mul(x, y, z),y)
@@ -31,51 +30,21 @@ In general, there's no restriction on the values that can be passed to an Input 
 """
 
 # task1 
-
-# the input
-inp1, inp2 = Input(value=6), Input(value=0.5)
-
-# the function
-func1 = Mul(inp1, inp2)
-
-# the grpah
-graph1 = topological_sort([inp1, inp2])
-
-# the output
-output1 = forward_pass(func1, graph1)
+output, graph = task1()
 
 # result
-print(output1, graph1, "\n")
+print("Task 1 Result: ",output,"\n", "Graph 1 Result: ",graph, "\n") # should be 3 with this example
 
 
 # task2
+output, graph = task2()
 
-# the input
-inputs, weights, bias = Input(value=[6, 14, 3]), Input(value=[0.5, 0.25, 1.4]), Input(value=[2])
-
-# the function
-f = Linear(inputs, weights, bias)
-
-# the graph
-graph = topological_sort([inputs, weights, bias])
-
-# the output
-output = forward_pass(f, graph)
-
-print(output, graph, "\n") # should be 12.7 with this example
+# result
+print("Task 2 Result: ",output, "\n", "Graph 2 Result: ",graph, "\n") # should be 12.7 with this example
 
 
 # tasks 3
+output, graph = task3()
 
-# the input 
-X, W, b = Input(value=np.array([[-1., -2.], [-1, -2]])), Input(value=np.array([[2., -3], [2., -3]])), Input(value=np.array([-3., -5]))
-
-# the linear function
-f2 = Linear(X, W, b)
-
-# the graph
-graph2 = topological_sort([X, W, b])
-
-# the output
-output2 = forward_pass(f2, graph2)
-print(output2, graph2, "\n")
+# result
+print("Task 3 Result: ",output, "\n", "Graph 3 Result: ",graph, "\n") # should be [[-9.  4.][-9.  4.]] with this example
