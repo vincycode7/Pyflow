@@ -58,3 +58,22 @@ def task3():
     # the output
     output = forward_pass(f, graph)
     return output, graph
+
+def task4():
+    X, W, b = Input(value=np.array([[-1., -2.], [-1, -2]])), Input(value=np.array([[2., -3], [2., -3]])), Input(value=np.array([-3., -5]))
+
+    f = Linear(X, W, b)
+    g = Sigmoid(f)
+
+    # the graph
+    graph= topological_sort([X, W, b])
+
+    # the output
+    output = forward_pass(g, graph)
+
+    """
+    Output should be:
+    [[  1.23394576e-04   9.82013790e-01]
+    [  1.23394576e-04   9.82013790e-01]]
+    """
+    return output, graph

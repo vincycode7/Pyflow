@@ -33,18 +33,25 @@ In general, there's no restriction on the values that can be passed to an Input 
 output, graph = task1()
 
 # result
-print("Task 1 Result: ",output,"\n", "Graph 1 Result: ",graph, "\n") # should be 3 with this example
+print("Task 1 Result: ",output,"\n", "Graph 1 Result: ",graph, "\n") # Output should be: 3 with this example
 
 
 # task2
 output, graph = task2()
 
 # result
-print("Task 2 Result: ",output, "\n", "Graph 2 Result: ",graph, "\n") # should be 12.7 with this example
+print("Task 2 Result: ",output, "\n", "Graph 2 Result: ",graph, "\n") # Output should be: 12.7 with this example
 
 
 # tasks 3
 output, graph = task3()
 
 # result
-print("Task 3 Result: ",output, "\n", "Graph 3 Result: ",graph, "\n") # should be [[-9.  4.][-9.  4.]] with this example
+print("Task 3 Result: ",output, "\n", "Graph 3 Result: ",graph, "\n") # Output should be: [[-9.  4.][-9.  4.]] with this example
+
+
+# tasks 4
+output, graph = task4()
+
+# result
+print("Task 4 Result: ",output, "\n", "Graph 4 Result: ",graph, "\n") # Output should be: [[  1.23394576e-04   9.82013790e-01] [  1.23394576e-04   9.82013790e-01]] with this example
