@@ -55,3 +55,9 @@ output, graph = task4()
 
 # result
 print("Task 4 Result: ",output, "\n", "Graph 4 Result: ",graph, "\n") # Output should be: [[  1.23394576e-04   9.82013790e-01] [  1.23394576e-04   9.82013790e-01]] with this example
+
+# tasks 5
+output, graph = task5()
+
+# result
+print("Task 5 Result: ",output, "\n", "Graph 5 Result: ",graph, "\n") # Output should be: 23.4166666667 with this example

@@ -14,8 +14,8 @@ def task1():
     graph = topological_sort([inp1, inp2])
 
     # the output
-    output = forward_pass(func1, graph)
-    return output, graph
+    forward_pass(graph)
+    return func1.value, graph
 
 def task2():
     # the input
@@ -28,8 +28,8 @@ def task2():
     graph = topological_sort([inputs, weights, bias])
 
     # the output
-    output = forward_pass(f, graph)
-    return output, graph
+    forward_pass(graph)
+    return f.value, graph
 
 def task2():
     # the input
@@ -42,8 +42,8 @@ def task2():
     graph = topological_sort([inputs, weights, bias])
 
     # the output
-    output = forward_pass(f, graph)
-    return output, graph
+    forward_pass(graph)
+    return f.value,  graph
 
 def task3():
     # the input 
@@ -56,8 +56,8 @@ def task3():
     graph= topological_sort([X, W, b])
 
     # the output
-    output = forward_pass(f, graph)
-    return output, graph
+    forward_pass(graph)
+    return f.value, graph
 
 def task4():
     X, W, b = Input(value=np.array([[-1., -2.], [-1, -2]])), Input(value=np.array([[2., -3], [2., -3]])), Input(value=np.array([-3., -5]))
@@ -69,11 +69,28 @@ def task4():
     graph= topological_sort([X, W, b])
 
     # the output
-    output = forward_pass(g, graph)
+    forward_pass(graph)
 
     """
     Output should be:
     [[  1.23394576e-04   9.82013790e-01]
     [  1.23394576e-04   9.82013790e-01]]
     """
-    return output, graph
+    return g.value, graph
+
+def task5():
+    y, a = Input(value=np.array([1, 2, 3])), Input(value=np.array([4.5, 5, 10]))
+    cost = MSE(y, a)
+
+    # the graph
+    graph= topological_sort([y, a])
+
+    # forward pass
+    forward_pass(graph)
+
+    """
+    Expected output
+
+    23.4166666667
+    """
+    return cost.value, graph
