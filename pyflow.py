@@ -168,7 +168,7 @@ class MSE(Node):
         y = self.inbound_nodes[0].value.reshape(-1, 1)
         a = self.inbound_nodes[1].value.reshape(-1, 1)
         # TODO: your code here
-        self.value = np.average(np.square(a - y))
+        self.value = np.mean(np.square(a - y))
 
 """
 No need to change anything below here!
