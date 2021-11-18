@@ -174,7 +174,6 @@ class MSE(Node):
 No need to change anything below here!
 """
 
-
 def topological_sort(input_nodes):
     """
     Sort generic nodes in topological order using Kahn's Algorithm.
