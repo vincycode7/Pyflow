@@ -9,7 +9,7 @@ class Node(object):
 
         `inbound_nodes`: A list of nodes with edges into this node.
     """
-    def __init__(self, inbound_nodes=[]):
+    def __init__(self, inbound_nodes=[],trainable=False, value=None):
         """
         Node's constructor (runs when the object is instantiated). Sets
         properties that all nodes need.
@@ -18,17 +18,25 @@ class Node(object):
         self.inbound_nodes = inbound_nodes
         # The eventual value of this node. Set by running
         # the forward() method.
-        self.value = None
+        self.value = value
         # A list of nodes that this node outputs to.
         self.outbound_nodes = []
         # New property! Keys are the inputs to this node and
         # their values are the partials of this node with
         # respect to that input.
         self.gradients = {}
+        self.L = []
+        self.trainable=trainable
+        self.trainable_val = [self] if self.trainable else []
+        
         # Sets this node as an outbound node for all of
         # this node's inputs.
         for node in inbound_nodes:
             node.outbound_nodes.append(self)
+        
+        for each_trainable_val in inbound_nodes:
+            # if each_trainable_val.trainable:
+            self.trainable_val += each_trainable_val.trainable_val
 
     def forward(self):
         """
@@ -44,18 +52,101 @@ class Node(object):
         """
         raise NotImplementedError
 
+    def topological_sort(self):
+        """
+        Sort the nodes in topological order using Kahn's Algorithm.
+
+        `feed_dict`: A dictionary where the key is a `Input` Node and the value is the respective value feed to that Node.
+
+        Returns a list of sorted nodes.
+        """
+
+        input_nodes = [n for n in self.trainable_val]
+
+        G = {}
+        nodes = [n for n in input_nodes]
+        while len(nodes) > 0:
+            n = nodes.pop(0)
+            if n not in G:
+                G[n] = {'in': set(), 'out': set()}
+            for m in n.outbound_nodes:
+                if m not in G:
+                    G[m] = {'in': set(), 'out': set()}
+                G[n]['out'].add(m)
+                G[m]['in'].add(n)
+                nodes.append(m)
+
+        L = []
+        S = set(input_nodes)
+        while len(S) > 0:
+            n = S.pop()
+
+            # if isinstance(n, Input):
+            #     n.value = n
+
+            L.append(n)
+            for m in n.outbound_nodes:
+                G[n]['out'].remove(m)
+                G[m]['in'].remove(n)
+                # if no other incoming edges add to S
+                if len(G[m]['in']) == 0:
+                    S.add(m)
+        self.L = L
+
+    def forward_and_backward(self):
+        """
+        Performs a forward pass and a backward pass through a list of sorted Nodes.
+
+        Arguments:
+
+            `trainable_val`: The result of calling `topological_sort`.
+        """
+        # Sort tranables
+        self.topological_sort()
+  
+        # forward pass on L sorted trainables
+        for n in self.L:
+            n.forward()
+
+        # Backward pass on L sorted trainables
+        # see: https://docs.python.org/2.3/whatsnew/section-slices.html
+        for n in self.L[::-1]:
+            n.backward()
+
+
+    def sgd_update(self,learning_rate=1e-2):
+        """
+        Updates the value of each trainable with SGD.
+
+        Arguments:
+
+            `trainables`: A list of `Input` Nodes representing weights/biases.
+            `learning_rate`: The learning rate.
+        """
+        # TODO: update all the `trainables` with SGD
+        # You can access and assign the value of a trainable with `value` attribute.
+        # Example:
+        # for t in trainables:
+        #   t.value = your implementation here
+        for (idx, each_trainable)  in enumerate(self.trainable_val):
+            partial_gradient = each_trainable.gradients[each_trainable]
+            self.trainable_val[idx].value -= (learning_rate*partial_gradient)
+            
+        # for each_trainable in self.trainable_val:
+        #     each_trainable.value -= (learning_rate*each_trainable.gradients[each_trainable])
 
 class Input(Node):
     """
     A generic input into the network.
     """
-    def __init__(self):
+    def __init__(self,value,trainable=True):
         # The base class constructor has to run to set all
         # the properties here.
         #
         # The most important property on an Input is value.
         # self.value is set during `topological_sort` later.
-        Node.__init__(self)
+        Node.__init__(self,value=value,trainable=trainable)
+        # print(self.trainable_val)
 
     def forward(self):
         # Do nothing because nothing is calculated.
@@ -71,6 +162,18 @@ class Input(Node):
         for n in self.outbound_nodes:
             self.gradients[self] += n.gradients[self]
 
+class Output(Input):
+    """
+    A generic output out of a network.
+    """
+    def __init__(self,value,trainable=False):
+        # The base class constructor has to run to set all
+        # the properties here.
+        #
+        # The most important property on an Input is value.
+        # self.value is set during `topological_sort` later.
+        Node.__init__(self,value=value,trainable=trainable)
+        # print(self.trainable_val)
 class Linear(Node):
     """
     Represents a node that performs a linear transform.
@@ -78,7 +181,8 @@ class Linear(Node):
     def __init__(self, X, W, b):
         # The base class (Node) constructor. Weights and bias
         # are treated like inbound nodes.
-        Node.__init__(self, [X, W, b])
+        Node.__init__(self, inbound_nodes=[X, W, b])
+        # print(type(self.inbound_nodes[2].value))
 
     def forward(self):
         """
@@ -114,7 +218,7 @@ class Sigmoid(Node):
     """
     def __init__(self, node):
         # The base class constructor.
-        Node.__init__(self, [node])
+        Node.__init__(self, inbound_nodes=[node])
 
     def _sigmoid(self, x):
         """
@@ -153,7 +257,7 @@ class MSE(Node):
         Should be used as the last node for a network.
         """
         # Call the base class' constructor.
-        Node.__init__(self, [y, a])
+        Node.__init__(self, inbound_nodes=[y, a])
 
     def forward(self):
         """
@@ -226,21 +330,21 @@ def topological_sort(feed_dict):
     return L
 
 
-def forward_and_backward(graph):
+def forward_and_backward(trainable_val):
     """
     Performs a forward pass and a backward pass through a list of sorted Nodes.
 
     Arguments:
 
-        `graph`: The result of calling `topological_sort`.
+        `trainable_val`: The result of calling `topological_sort`.
     """
     # Forward pass
-    for n in graph:
+    for n in trainable_val:
         n.forward()
 
     # Backward pass
     # see: https://docs.python.org/2.3/whatsnew/section-slices.html
-    for n in graph[::-1]:
+    for n in trainable_val[::-1]:
         n.backward()
 
 
